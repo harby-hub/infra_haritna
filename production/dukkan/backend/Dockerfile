@@ -77,8 +77,8 @@ RUN pecl install redis && docker-php-ext-enable redis
 RUN apk del $PHPIZE_DEPS linux-headers
 
 # Copy custom PHP and FPM config from infra repo
-COPY infra_haritna/backend/php.ini /usr/local/etc/php/conf.d/99-custom.ini
-COPY infra_haritna/backend/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY infra_haritna/production/dukkan/backend/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY infra_haritna/production/dukkan/backend/www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www
 
