@@ -43,16 +43,44 @@ External:
 
 ## Setup (first time)
 
+### 1. Install dependencies & Docker
 ```bash
-bash /opt/dukkan/infra_haritna/scripts/setup.sh
-nano /opt/dukkan/.env     # fill in secrets
-bash /opt/dukkan/infra_haritna/scripts/deploy.sh
+apt update && apt upgrade -y && apt install -y git curl ufw
+curl -fsSL https://get.docker.com | sh && systemctl enable docker && systemctl start docker
+```
+
+### 2. Configure firewall
+```bash
+ufw allow 22/tcp && ufw allow 80/tcp && ufw allow 443/tcp && ufw --force enable
+```
+
+### 3. Clone repos
+```bash
+mkdir -p /opt/dukkan && cd /opt/dukkan
+git clone git@github.com:harby-hub/infra_haritna.git
+git clone git@github.com:harby-hub/backend_dukkan.git
+git clone git@github.com:harby-hub/frontend_dukkan.git
+```
+
+### 4. Run setup script
+```bash
+bash infra_haritna/production/dukkan/scripts/setup.sh
+```
+
+### 5. Fill in secrets
+```bash
+nano /opt/dukkan/.env
+```
+
+### 6. Deploy
+```bash
+bash infra_haritna/production/dukkan/scripts/deploy.sh
 ```
 
 ## Deploy / Update
 
 ```bash
-bash /opt/dukkan/infra_haritna/scripts/deploy.sh
+bash /opt/dukkan/infra_haritna/production/dukkan/scripts/deploy.sh
 ```
 
 ## Domains
