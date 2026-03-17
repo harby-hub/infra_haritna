@@ -47,15 +47,17 @@ fi
 echo "==> Copying .dockerignore to build context..."
 cp infra_haritna/production/dukkan/.dockerignore .dockerignore
 
-echo "==> Setting up .env..."
+echo "==> Setting up .env files..."
+ENVS_DIR="infra_haritna/production/dukkan/envs"
+
 if [ ! -f ".env" ]; then
     cp infra_haritna/production/dukkan/.env.example .env
-    echo ""
-    echo "!!! IMPORTANT: Edit /opt/dukkan/.env with your production secrets !!!"
-    echo "    nano /opt/dukkan/.env"
-    echo ""
-else
-    echo ".env already exists, skipping."
+fi
+if [ ! -f "backend_dukkan/.env" ]; then
+    cp "$ENVS_DIR/backend.env" backend_dukkan/.env
+fi
+if [ ! -f "frontend_dukkan/.env" ]; then
+    cp "$ENVS_DIR/frontend.env" frontend_dukkan/.env
 fi
 
 echo ""
@@ -64,5 +66,7 @@ echo "  Setup complete!"
 echo "=========================================="
 echo ""
 echo "Next steps:"
-echo "  1. Edit /opt/dukkan/.env with your production secrets"
-echo "  2. Run: cd /opt/dukkan && bash infra_haritna/scripts/deploy.sh"
+echo "  1. Fill in secrets:"
+echo "     nano /opt/dukkan/.env"
+echo "     nano /opt/dukkan/backend_dukkan/.env"
+echo "  2. Run: cd /opt/dukkan && bash infra_haritna/production/dukkan/scripts/deploy.sh"
