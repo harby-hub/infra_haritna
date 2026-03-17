@@ -26,7 +26,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         mbstring \
         xml \
         opcache \
-        pcntl
+        pcntl \
+        exif
 
 RUN pecl install redis && docker-php-ext-enable redis
 
