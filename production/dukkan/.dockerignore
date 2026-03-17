@@ -1,0 +1,33 @@
+# Ignore .env at root level
+.env
+
+# Backend ignores
+dukkan-backend/vendor/
+dukkan-backend/node_modules/
+dukkan-backend/.git/
+dukkan-backend/.env
+dukkan-backend/.env.*
+dukkan-backend/storage/logs/*
+dukkan-backend/storage/framework/cache/*
+dukkan-backend/storage/framework/sessions/*
+dukkan-backend/storage/framework/views/*
+dukkan-backend/tests/
+dukkan-backend/.phpunit.cache/
+dukkan-backend/.idea/
+dukkan-backend/.vscode/
+
+# Frontend ignores
+dukkan-frontend/node_modules/
+dukkan-frontend/dist/
+dukkan-frontend/.git/
+dukkan-frontend/.env
+dukkan-frontend/.env.*
+dukkan-frontend/.idea/
+dukkan-frontend/.vscode/
+dukkan-frontend/android/
+dukkan-frontend/ios/
+dukkan-frontend/electron/
+
+# Infra ignores (only need Dockerfiles and configs)
+dukkan-infra/.git/
+dukkan-infra/scripts/
