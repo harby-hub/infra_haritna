@@ -54,27 +54,11 @@ RUN apk add --no-cache \
     freetype \
     icu-libs \
     libxml2 \
-    oniguruma \
-    linux-headers \
-    $PHPIZE_DEPS
+    oniguruma
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        pdo_pgsql \
-        pgsql \
-        gd \
-        intl \
-        zip \
-        bcmath \
-        mbstring \
-        xml \
-        opcache \
-        pcntl
-
-RUN pecl install redis && docker-php-ext-enable redis
-
-# Clean up build deps
-RUN apk del $PHPIZE_DEPS linux-headers
+# Copy compiled extensions from deps stage (no rebuild needed)
+COPY --from=deps /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=deps /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
 # Copy custom PHP and FPM config from infra repo
 COPY infra_haritna/production/dukkan/backend/php.ini /usr/local/etc/php/conf.d/99-custom.ini
