@@ -2,16 +2,19 @@
 set -euo pipefail
 
 # ============================================
-# Renew Let's Encrypt wildcard certificate
-# Run via cron: 0 3 1 * * bash /opt/dukkan/infra_haritna/production/dukkan/scripts/ssl-renew.sh
+# Dukkan — SSL Certificate Renewal
+# Cron: 0 3 */15 * *  (every 15 days at 3 AM)
 # ============================================
 
 COMPOSE="docker compose -f /opt/dukkan/infra_haritna/production/dukkan/docker-compose.yml"
+LOG="/var/log/dukkan-ssl-renew.log"
 
-echo "==> Renewing SSL certificate..."
-$COMPOSE run --rm certbot
+echo "[$(date)] Starting SSL renewal..." >> "$LOG"
 
-echo "==> Reloading nginx..."
-$COMPOSE exec -T nginx nginx -s reload
-
-echo "==> SSL renewal complete!"
+if $COMPOSE run --rm certbot >> "$LOG" 2>&1; then
+    $COMPOSE exec -T nginx nginx -s reload >> "$LOG" 2>&1
+    echo "[$(date)] SSL renewal complete." >> "$LOG"
+else
+    echo "[$(date)] SSL renewal failed!" >> "$LOG"
+    exit 1
+fi

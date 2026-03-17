@@ -90,6 +90,15 @@ if [ "$TARGET" = "all" ] || [ "$TARGET" = "backend" ]; then
     $COMPOSE restart queue-worker
 fi
 
+# --- SSL auto-renewal cron ---
+SSL_CRON="0 3 */15 * * bash /opt/dukkan/infra_haritna/production/dukkan/scripts/ssl-renew.sh"
+if ! crontab -l 2>/dev/null | grep -qF "ssl-renew.sh"; then
+    (crontab -l 2>/dev/null; echo "$SSL_CRON") | crontab -
+    echo "==> SSL renewal cron job installed (every 15 days at 3 AM)"
+else
+    echo "==> SSL renewal cron job already exists"
+fi
+
 echo ""
 echo "==> Deploy complete! ($TARGET)"
 echo ""
