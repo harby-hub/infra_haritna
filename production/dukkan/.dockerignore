@@ -2,32 +2,32 @@
 .env
 
 # Backend ignores
-dukkan-backend/vendor/
-dukkan-backend/node_modules/
-dukkan-backend/.git/
-dukkan-backend/.env
-dukkan-backend/.env.*
-dukkan-backend/storage/logs/*
-dukkan-backend/storage/framework/cache/*
-dukkan-backend/storage/framework/sessions/*
-dukkan-backend/storage/framework/views/*
-dukkan-backend/tests/
-dukkan-backend/.phpunit.cache/
-dukkan-backend/.idea/
-dukkan-backend/.vscode/
+backend_dukkan/vendor/
+backend_dukkan/node_modules/
+backend_dukkan/.git/
+backend_dukkan/.env
+backend_dukkan/.env.*
+backend_dukkan/storage/logs/*
+backend_dukkan/storage/framework/cache/*
+backend_dukkan/storage/framework/sessions/*
+backend_dukkan/storage/framework/views/*
+backend_dukkan/tests/
+backend_dukkan/.phpunit.cache/
+backend_dukkan/.idea/
+backend_dukkan/.vscode/
 
 # Frontend ignores
-dukkan-frontend/node_modules/
-dukkan-frontend/dist/
-dukkan-frontend/.git/
-dukkan-frontend/.env
-dukkan-frontend/.env.*
-dukkan-frontend/.idea/
-dukkan-frontend/.vscode/
-dukkan-frontend/android/
-dukkan-frontend/ios/
-dukkan-frontend/electron/
+frontend_dukkan/node_modules/
+frontend_dukkan/dist/
+frontend_dukkan/.git/
+frontend_dukkan/.env
+frontend_dukkan/.env.*
+frontend_dukkan/.idea/
+frontend_dukkan/.vscode/
+frontend_dukkan/android/
+frontend_dukkan/ios/
+frontend_dukkan/electron/
 
 # Infra ignores (only need Dockerfiles and configs)
-dukkan-infra/.git/
-dukkan-infra/scripts/
+infra_haritna/.git/
+infra_haritna/scripts/

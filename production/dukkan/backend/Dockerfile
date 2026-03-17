@@ -34,11 +34,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy Laravel source from dukkan-backend/
-COPY dukkan-backend/composer.json dukkan-backend/composer.lock ./
+# Copy Laravel source from backend_dukkan/
+COPY backend_dukkan/composer.json backend_dukkan/composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-COPY dukkan-backend/ .
+COPY backend_dukkan/ .
 RUN composer dump-autoload --optimize --no-dev
 
 # ============================================
@@ -77,8 +77,8 @@ RUN pecl install redis && docker-php-ext-enable redis
 RUN apk del $PHPIZE_DEPS linux-headers
 
 # Copy custom PHP and FPM config from infra repo
-COPY dukkan-infra/backend/php.ini /usr/local/etc/php/conf.d/99-custom.ini
-COPY dukkan-infra/backend/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY infra_haritna/backend/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY infra_haritna/backend/www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www
 

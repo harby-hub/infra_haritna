@@ -5,11 +5,11 @@ FROM oven/bun:1-alpine AS build
 
 WORKDIR /app
 
-# Copy Vue source from dukkan-frontend/
-COPY dukkan-frontend/package.json dukkan-frontend/bun.lock* ./
+# Copy Vue source from frontend_dukkan/
+COPY frontend_dukkan/package.json frontend_dukkan/bun.lock* ./
 RUN bun install --frozen-lockfile
 
-COPY dukkan-frontend/ .
+COPY frontend_dukkan/ .
 
 ARG VITE_API_BASE_URL=https://api.haritna.net
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
