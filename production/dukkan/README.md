@@ -6,9 +6,9 @@ Docker + Nginx + deploy configs for the Dukkan platform.
 
 ```
 nginx (ports 80/443)
-  ├── api.dukkan.haritna.net   → backend:9000 (PHP-FPM)
-  ├── app.dukkan.haritna.net   → frontend:3000 (Bun SSR)
-  └── *.dukkan.haritna.net     → backend:9000 (tenant domains)
+  ├── dukkan-api.haritna.net   → backend:9000 (PHP-FPM)    [Cloudflare Proxy]
+  ├── dukkan-app.haritna.net   → frontend:3000 (Bun SSR)   [Cloudflare Proxy]
+  └── *.dukkan.haritna.net     → backend:9000 (tenants)    [Let's Encrypt]
 
 backend (PHP-FPM :9000)  ←→  redis (:6379)
 queue-worker              ←→  redis (:6379)
@@ -25,6 +25,7 @@ External:
 | Service | Image | Purpose |
 |---------|-------|---------|
 | nginx | nginx:alpine | Reverse proxy + static files |
+| certbot | certbot/dns-cloudflare | Let's Encrypt wildcard SSL |
 | backend | php:8.4-fpm-alpine | Laravel API |
 | queue-worker | (same as backend) | Background jobs |
 | scheduler | (same as backend) | Cron / scheduled tasks |
@@ -85,9 +86,16 @@ bash /opt/dukkan/infra_haritna/production/dukkan/scripts/deploy.sh
 
 ## Domains
 
-| Domain | Purpose |
-|--------|---------|
-| `api.dukkan.haritna.net` | Backend API |
-| `app.dukkan.haritna.net` | Frontend app |
-| `media.dukkan.haritna.net` | R2 media storage |
-| `*.dukkan.haritna.net` | Tenant domains |
+| Domain | SSL | Purpose |
+|--------|-----|---------|
+| `dukkan-api.haritna.net` | Cloudflare Proxy | Backend API |
+| `dukkan-app.haritna.net` | Cloudflare Proxy | Frontend app |
+| `dukkan-media.haritna.net` | R2 Custom Domain | Media storage |
+| `*.dukkan.haritna.net` | Let's Encrypt | Tenant domains |
+
+## SSL Renewal
+
+Tenant wildcard cert renews automatically. Manual renewal:
+```bash
+bash /opt/dukkan/infra_haritna/production/dukkan/scripts/ssl-renew.sh
+```

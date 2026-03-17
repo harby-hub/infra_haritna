@@ -7,9 +7,32 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - backend-public:/var/www/backend/public:ro
+      - letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
     restart: always
+    networks:
+      - dukkan
+
+  certbot:
+    image: certbot/dns-cloudflare:latest
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-conf:/etc/certbot
+    entrypoint: ""
+    command: >
+      sh -c "
+        echo 'dns_cloudflare_api_token = '$$CF_API_TOKEN > /etc/certbot/cloudflare.ini &&
+        chmod 600 /etc/certbot/cloudflare.ini &&
+        certbot certonly --dns-cloudflare
+          --dns-cloudflare-credentials /etc/certbot/cloudflare.ini
+          -d '*.dukkan.haritna.net'
+          -d 'dukkan.haritna.net'
+          --email mahmuod.sami.99@gmail.com
+          --agree-tos --non-interactive &&
+        echo 'Certificate obtained successfully!'
+      "
+    env_file: /opt/dukkan/.env
     networks:
       - dukkan
 
@@ -60,7 +83,7 @@ services:
       context: /opt/dukkan
       dockerfile: infra_haritna/production/dukkan/frontend/Dockerfile
       args:
-        VITE_API_BASE_URL: https://api.dukkan.haritna.net
+        VITE_API_BASE_URL: https://dukkan-api.haritna.net
     expose:
       - "3000"
     env_file: /opt/dukkan/.env
@@ -83,6 +106,8 @@ volumes:
   backend-storage:
   backend-public:
   redis-data:
+  letsencrypt:
+  certbot-conf:
 
 networks:
   dukkan:
