@@ -11,7 +11,8 @@ set -euo pipefail
 # ============================================
 
 BASE_DIR="/opt/dukkan"
-COMPOSE="docker compose -f $BASE_DIR/infra_haritna/production/dukkan/docker-compose.yml"
+INFRA_DIR="$BASE_DIR/infra_haritna/production/dukkan"
+COMPOSE="docker compose -f $INFRA_DIR/docker-compose.yml"
 
 cd "$BASE_DIR"
 
@@ -28,6 +29,35 @@ fi
 if [ "$TARGET" = "all" ] || [ "$TARGET" = "frontend" ]; then
     cd frontend_dukkan && git pull && cd ..
 fi
+
+# --- Copy env files ---
+echo "==> Syncing env files..."
+
+# .dockerignore
+cp "$INFRA_DIR/.dockerignore" "$BASE_DIR/.dockerignore"
+
+# Backend .env — copy template then inject secrets from main .env
+if [ ! -f "$BASE_DIR/backend_dukkan/.env" ]; then
+    cp "$INFRA_DIR/envs/backend.env" "$BASE_DIR/backend_dukkan/.env"
+    echo "    Created backend_dukkan/.env from template"
+fi
+
+# Inject secrets from main .env into backend .env
+if [ -f "$BASE_DIR/.env" ]; then
+    # Read secrets from main .env and update backend .env
+    while IFS='=' read -r key value; do
+        [[ -z "$key" || "$key" =~ ^# ]] && continue
+        # Only update if key exists in backend .env and value is empty there
+        if grep -q "^${key}=$" "$BASE_DIR/backend_dukkan/.env" 2>/dev/null; then
+            sed -i "s|^${key}=$|${key}=${value}|" "$BASE_DIR/backend_dukkan/.env"
+        fi
+    done < "$BASE_DIR/.env"
+    echo "    Injected secrets into backend_dukkan/.env"
+fi
+
+# Frontend .env
+cp "$INFRA_DIR/envs/frontend.env" "$BASE_DIR/frontend_dukkan/.env"
+echo "    Copied frontend_dukkan/.env"
 
 # --- Build ---
 echo "==> Building and starting containers..."
