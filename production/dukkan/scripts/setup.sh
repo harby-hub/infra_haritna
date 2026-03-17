@@ -44,9 +44,12 @@ if [ ! -d "frontend_dukkan" ]; then
     git clone git@github.com:harby-hub/frontend_dukkan.git
 fi
 
+echo "==> Copying .dockerignore to build context..."
+cp infra_haritna/production/dukkan/.dockerignore .dockerignore
+
 echo "==> Setting up .env..."
 if [ ! -f ".env" ]; then
-    cp infra_haritna/.env.example .env
+    cp infra_haritna/production/dukkan/.env.example .env
     echo ""
     echo "!!! IMPORTANT: Edit /opt/dukkan/.env with your production secrets !!!"
     echo "    nano /opt/dukkan/.env"

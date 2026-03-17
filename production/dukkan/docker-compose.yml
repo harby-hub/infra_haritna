@@ -15,11 +15,11 @@ services:
 
   backend:
     build:
-      context: ..
-      dockerfile: infra_haritna/backend/Dockerfile
+      context: /opt/dukkan
+      dockerfile: infra_haritna/production/dukkan/backend/Dockerfile
     expose:
       - "9000"
-    env_file: ../.env
+    env_file: /opt/dukkan/.env
     volumes:
       - backend-storage:/var/www/storage/app
       - backend-public:/var/www/public
@@ -31,10 +31,10 @@ services:
 
   queue-worker:
     build:
-      context: ..
-      dockerfile: infra_haritna/backend/Dockerfile
+      context: /opt/dukkan
+      dockerfile: infra_haritna/production/dukkan/backend/Dockerfile
     command: php artisan queue:work redis --tries=3 --timeout=90 --sleep=3
-    env_file: ../.env
+    env_file: /opt/dukkan/.env
     depends_on:
       - redis
       - backend
@@ -44,10 +44,10 @@ services:
 
   scheduler:
     build:
-      context: ..
-      dockerfile: infra_haritna/backend/Dockerfile
+      context: /opt/dukkan
+      dockerfile: infra_haritna/production/dukkan/backend/Dockerfile
     command: sh -c "while true; do php artisan schedule:run --no-interaction >> /dev/null 2>&1; sleep 60; done"
-    env_file: ../.env
+    env_file: /opt/dukkan/.env
     depends_on:
       - redis
       - backend
@@ -57,13 +57,13 @@ services:
 
   frontend:
     build:
-      context: ..
-      dockerfile: infra_haritna/frontend/Dockerfile
+      context: /opt/dukkan
+      dockerfile: infra_haritna/production/dukkan/frontend/Dockerfile
       args:
         VITE_API_BASE_URL: https://api.dukkan.haritna.net
     expose:
       - "3000"
-    env_file: ../.env
+    env_file: /opt/dukkan/.env
     restart: always
     networks:
       - dukkan
