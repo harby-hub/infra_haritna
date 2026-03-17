@@ -14,7 +14,7 @@ COPY frontend_dukkan/ .
 ARG VITE_API_BASE_URL=https://api.haritna.net
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
-RUN bun run build:web
+RUN bun run build-only
 
 # ============================================
 # Stage 2: Production
