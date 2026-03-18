@@ -83,7 +83,7 @@ services:
       context: /opt/dukkan
       dockerfile: infra_haritna/production/dukkan/frontend/Dockerfile
       args:
-        VITE_API_BASE_URL: https://dukkan-api.haritna.net
+        VITE_API_BASE_URL: https://demo.dukkan.haritna.net
     expose:
       - "3000"
     env_file: /opt/dukkan/.env

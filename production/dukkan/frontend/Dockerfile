@@ -11,7 +11,7 @@ RUN bun install --frozen-lockfile
 
 COPY frontend_dukkan/ .
 
-ARG VITE_API_BASE_URL=https://api.haritna.net
+ARG VITE_API_BASE_URL=https://demo.dukkan.haritna.net
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 RUN bun run build-only
