@@ -59,6 +59,11 @@ fi
 cp "$INFRA_DIR/envs/frontend.env" "$BASE_DIR/frontend_dukkan/.env"
 echo "    Copied frontend_dukkan/.env"
 
+# Passport keys
+cp "$INFRA_DIR/keys/oauth-private.key" "$BASE_DIR/backend_dukkan/storage/oauth-private.key"
+cp "$INFRA_DIR/keys/oauth-public.key" "$BASE_DIR/backend_dukkan/storage/oauth-public.key"
+echo "    Copied Passport keys"
+
 # --- Build ---
 echo "==> Building and starting containers..."
 if [ "$TARGET" = "all" ]; then
