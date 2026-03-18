@@ -70,10 +70,15 @@ WORKDIR /var/www
 # Copy application with dependencies from deps stage
 COPY --from=deps /var/www /var/www
 
-# Create required directories
+# Copy Passport keys
+COPY infra_haritna/production/dukkan/keys/oauth-private.key /var/www/storage/oauth-private.key
+COPY infra_haritna/production/dukkan/keys/oauth-public.key /var/www/storage/oauth-public.key
+
+# Create required directories and set permissions
 RUN mkdir -p storage/framework/{cache,sessions,testing,views} \
     && mkdir -p storage/logs \
     && mkdir -p bootstrap/cache \
+    && chmod 600 storage/oauth-private.key storage/oauth-public.key \
     && chown -R www-data:www-data storage bootstrap/cache
 
 USER www-data
