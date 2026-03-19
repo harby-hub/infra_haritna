@@ -97,8 +97,8 @@ if [ "$TARGET" = "all" ] || [ "$TARGET" = "backend" ]; then
     $COMPOSE exec -T backend php artisan view:cache
     $COMPOSE exec -T backend php artisan storage:link 2>/dev/null || true
 
-    echo "==> Restarting queue worker..."
-    $COMPOSE restart queue-worker
+    echo "==> Restarting queue worker and nginx..."
+    $COMPOSE restart queue-worker nginx
 fi
 
 # --- SSL auto-renewal cron ---
