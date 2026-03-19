@@ -74,9 +74,6 @@ COPY --from=deps /var/www /var/www
 COPY infra_haritna/production/dukkan/keys/oauth-private.key /var/www/storage/oauth-private.key
 COPY infra_haritna/production/dukkan/keys/oauth-public.key /var/www/storage/oauth-public.key
 
-# Copy backend .env (deploy.sh prepares it with secrets injected)
-COPY backend_dukkan/.env /var/www/.env
-
 # Create required directories and set permissions
 RUN mkdir -p storage/framework/{cache,sessions,testing,views} \
     && mkdir -p storage/logs \

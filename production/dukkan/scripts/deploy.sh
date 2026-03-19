@@ -82,6 +82,11 @@ sleep 5
 
 # --- Backend post-deploy ---
 if [ "$TARGET" = "all" ] || [ "$TARGET" = "backend" ]; then
+    echo "==> Copying .env into containers..."
+    for svc in backend queue-worker scheduler; do
+        docker cp "$BASE_DIR/backend_dukkan/.env" "$($COMPOSE ps -q $svc)":/var/www/.env 2>/dev/null || true
+    done
+
     echo "==> Running migrations..."
     $COMPOSE exec -T backend php artisan migrate --force
     $COMPOSE exec -T backend php artisan tenants:migrate --force
