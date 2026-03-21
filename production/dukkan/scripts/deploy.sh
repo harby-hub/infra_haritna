@@ -17,6 +17,13 @@ COMPOSE="docker compose -f $INFRA_DIR/docker-compose.yml"
 
 cd "$BASE_DIR"
 
+# --- Self-update: if infra changed, re-exec the new script ---
+if [ -z "${DEPLOY_REEXEC:-}" ]; then
+    cd infra_haritna && git pull && cd ..
+    export DEPLOY_REEXEC=1
+    exec bash "$INFRA_DIR/scripts/deploy.sh" "$@"
+fi
+
 TARGET="${1:-all}"
 NO_CACHE=""
 if [[ "${2:-}" == "--no-cache" ]]; then
@@ -26,7 +33,7 @@ fi
 
 # --- Pull ---
 echo "==> Pulling latest code..."
-if [ "$TARGET" = "all" ] || [ "$TARGET" = "infra" ]; then
+if [ "$TARGET" = "infra" ]; then
     cd infra_haritna && git pull && cd ..
 fi
 if [ "$TARGET" = "all" ] || [ "$TARGET" = "backend" ]; then
@@ -74,8 +81,8 @@ echo "    Copied Passport keys"
 # --- Build ---
 echo "==> Building and starting containers..."
 if [ "$TARGET" = "all" ]; then
-    $COMPOSE build $NO_CACHE
-    $COMPOSE up -d --force-recreate
+    $COMPOSE build $NO_CACHE backend frontend
+    $COMPOSE up -d --force-recreate backend queue-worker scheduler frontend nginx
 elif [ "$TARGET" = "backend" ]; then
     $COMPOSE build $NO_CACHE backend
     $COMPOSE up -d --force-recreate backend queue-worker scheduler
