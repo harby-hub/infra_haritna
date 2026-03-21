@@ -8,6 +8,7 @@ set -euo pipefail
 #   bash deploy.sh backend      # deploy backend only
 #   bash deploy.sh frontend     # deploy frontend only
 #   bash deploy.sh infra        # deploy infra only
+#   bash deploy.sh frontend --no-cache   # force fresh build (bypass Docker cache)
 # ============================================
 
 BASE_DIR="/opt/dukkan"
@@ -17,6 +18,11 @@ COMPOSE="docker compose -f $INFRA_DIR/docker-compose.yml"
 cd "$BASE_DIR"
 
 TARGET="${1:-all}"
+NO_CACHE=""
+if [[ "${2:-}" == "--no-cache" ]]; then
+    NO_CACHE="--no-cache"
+    echo "==> Force build (no Docker cache)"
+fi
 
 # --- Pull ---
 echo "==> Pulling latest code..."
@@ -68,11 +74,14 @@ echo "    Copied Passport keys"
 # --- Build ---
 echo "==> Building and starting containers..."
 if [ "$TARGET" = "all" ]; then
-    $COMPOSE up -d --build
+    $COMPOSE build $NO_CACHE
+    $COMPOSE up -d --force-recreate
 elif [ "$TARGET" = "backend" ]; then
-    $COMPOSE up -d --build backend queue-worker scheduler
+    $COMPOSE build $NO_CACHE backend
+    $COMPOSE up -d --force-recreate backend queue-worker scheduler
 elif [ "$TARGET" = "frontend" ]; then
-    $COMPOSE up -d --build frontend
+    $COMPOSE build $NO_CACHE frontend
+    $COMPOSE up -d --force-recreate frontend
 elif [ "$TARGET" = "infra" ]; then
     $COMPOSE up -d --build nginx
 fi
